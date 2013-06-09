@@ -1,0 +1,327 @@
+<!doctype html>
+ 
+<html lang="en">
+<head>
+
+<style>
+html{background:#999999}
+body
+{
+width:100%;
+margin:auto;
+}
+.input
+{
+display:none;
+}
+.error
+{
+background-color:white;
+text-align:centre;
+color:black;
+padding-top: 70px;
+margin:auto;
+height: 35px;
+}
+.header
+{
+width: 100%;
+background-color:black;
+height:70px;
+position:fixed;
+}
+#content
+{
+padding-top: 10px;
+}
+.wrapper
+{
+width: 1000px;
+margin:auto;
+}
+.asd
+{
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border-style:solid;
+        border-width: 1px;
+border-color:#CCC;
+}
+.empty
+{
+    
+   border-style:solid;
+border-color:#CCC;
+    border-radius:9px;
+    border-width: 1px;
+    height:50px;
+    width:50px;
+}
+input{
+    text-align:center;
+  
+}
+.general{
+    margin-bottom:12px;
+	width::100%;
+}
+.notify
+{
+    padding-top:10px;
+    height: 30px;
+	width:300px;
+	margin: auto;
+	display:none;
+	text-align:centre;
+}
+
+
+
+table        {
+           margin: auto;
+
+           
+        }
+td
+{
+ height: 30px;
+ width: 30px;
+}
+.R
+{
+background-color:red;
+}
+.B
+{
+background-color:black;
+}
+.G
+{
+background-color:green;
+}
+</style>
+  <meta charset="utf-8" />
+  <script src="js/jquery-1.9.1.js"></script>
+   <script type="text/javascript">
+
+</script>
+
+  </head>
+<body>
+<script>
+
+	maxX=30;
+maxY=15;
+var gridX=0;
+var gridY=0;
+var x=0;
+var y=0;
+	var stack=[];
+	function initializeMatrix()
+	{
+		var $table = $('<table/>');
+		for(var i=0;i<gridX;i++)
+		{
+			var $tr=$('<tr/>');
+			for(var j=0;j<gridY;j++)
+			{	
+				var $wrap = $('<div/>');
+				$wrap.attr('id',i.toString()+j.toString());
+				$wrap.attr('class',"btn-success asd");
+				var $td=$('<td/>');
+				$td.append($wrap);
+				$tr.append($td);
+			}
+			$table.prepend($tr);
+		}
+		$('#content').append($table);
+	}
+	function checkInput()
+{
+   
+    var temp=$('#direction').val().toUpperCase();
+    //alert(temp);
+    if(temp.length==1)
+    {
+        if(temp=='N'||temp=='S'||temp=='E'||temp=='W')
+        {
+            var str=$('#command').val().toUpperCase();
+            var bool=true;
+             //alert(str.length);
+            for(var i=0;i<str.length;i++)
+            {
+                if(str[i]!='L' && str[i]!='R' && str[i]!='M')
+                    bool=false;
+            }
+            return bool;           
+        }
+        else return false;        
+    }
+    else return false;
+ }
+$(function()
+{
+	
+  	/*$("div").click(function() {
+	var cur_id=$(this).attr("id");	
+	var  i=cur_id[0];
+	var j=cur_id[1];
+	var src=$(this).attr("class");	
+	if(checkAdjacent(i,j,src))
+	{
+		shade(i+j);
+		Fill(rows,cols,src);
+	}
+});*/
+var degree=0;
+var target=0;
+$('#right').click(function(){
+    if(degree==360) degree=0;
+    target=degree+90;
+    move=function(){
+                  degree+=10;
+    $('#img').css({
+		'-webkit-transform': 'rotate('+degree+'deg)',
+		'-moz-transform': 'rotate('+degree+'deg)',
+		'-ms-transform': 'rotate('+degree+'deg)',
+		'-o-transform': 'rotate('+degree+'deg)',
+		'transform': 'rotate('+degree+'deg)'
+				});
+        $('#degree').val(degree);
+    $('#target').val(target);
+        //alert(degree);
+    if(degree<target) setTimeout(move,100);
+		//alert("left");
+    
+		};
+move();
+   
+		});
+$('#left').click(function(){
+    if(degree==-360) degree=0;
+    target=degree-90;
+    //alert("left called");
+  
+    move=function(){
+                  degree-=10;
+    $('#img').css({
+		'-webkit-transform': 'rotate('+degree+'deg)',
+		'-moz-transform': 'rotate('+degree+'deg)',
+		'-ms-transform': 'rotate('+degree+'deg)',
+		'-o-transform': 'rotate('+degree+'deg)',
+		'transform': 'rotate('+degree+'deg)'
+				});
+        $('#degree').val(degree);
+    $('#target').val(target);
+        //alert(degree);
+    if(degree>target) setTimeout(move,100);
+		//alert("left");
+    
+		};
+move();
+    
+});
+
+function showError(msg)
+{
+	$('.notify').show();
+	$('.notify').html("<b>"+msg+"</b>");
+}
+$('#construct').click(function()
+{
+    if($.isNumeric($('#gridX').val()) && $.isNumeric($('#gridY').val()))
+    {
+        gridX=parseInt($('#gridX').val());
+        gridY=parseInt($('#gridY').val());
+        if((gridX<0 ||gridX>maxX)||(gridY<0 || gridY>maxY)) showError("Input Out of Bound. ");
+        else
+        {
+            $('#gridX').prop('disabled', true); 
+            $('#gridY').prop('disabled', true);
+            $('.input').show();
+			initializeMatrix();
+			$('.notify').hide();
+	        $('.notify').html("");
+			
+            
+        }
+    }
+    else showError("Non-Numeric Input Not Allowed. ");
+
+ });
+ $('#gridReset').click(function()
+                   {
+                     $('#gridX').val('');
+                       $('#gridY').val('');
+                        $('#gridX').prop('disabled', false); 
+                             $('#gridY').prop('disabled', false); 
+                       $('.input').hide();
+					   $('.notify').hide();
+	$('.notify').html("");
+	$('#content').html("");
+                          
+                   });
+				   
+$('#start').click(function()
+{
+    if($.isNumeric($('#x').val()) && $.isNumeric($('#y').val()) && checkInput())
+    {
+        x=parseInt($('#x').val());
+        y=parseInt($('#y').val());
+		if((x<0 ||x>gridX)||(y<0 || y>gridY)) showError("Input Out of Bound.");
+        else
+        {
+            $('#x').prop('disabled', true); 
+            $('#y').prop('disabled', true);
+            $('#direction').prop('disabled', true); 
+            $('#command').prop('disabled', true);
+            //startMovement();
+        }
+    }
+    else showError("Invalid Input ");                       
+                     
+                   });
+
+$('#reset').click(function()
+                   {
+				  $('#x').val('');
+                       $('#y').val('');
+                       $('#command').val('');
+                       $('#direction').val('');
+                     $('#x').prop('disabled', false); 
+                             $('#y').prop('disabled', false); 
+                             $('#command').prop('disabled', false);
+                           $('#direction').prop('disabled', false); 
+                   });
+				  
+});
+
+</script>
+<div class="header">
+<div class="wrapper">
+   <div class="general">
+     <input class="span2 sp" id="gridX" type="text" placeholder="X: X>0 && X<28">
+     <input class="span2" id="gridY" type="text" placeholder="Y: Y>0 &&Y<12">
+     <button class="btn btn-success" type="button" id="construct">Construct</button>
+     <button class="btn btn-danger" type="button" id="gridReset">Reset</button>
+	 <label id="notify">
+   </div>
+   <div class="input">  
+     <input class="span1" id="x" type="text" placeholder="X">
+     <input class="span1" id="y" type="text" placeholder="Y">
+     <input class="span2" id="direction" type="text" placeholder="Direction(N,E,S,W)">
+     <input class="span2" id="command" type="text" placeholder="Input String(L,R,M)">
+     <button class="btn btn-success" type="button" id="start">Start</button>
+     <button class="btn btn-danger" type="button" id="reset">Reset</button>
+   </div>
+   </div>
+</div>       
+<div class="error">
+<div class="notify"></div>
+</div>
+<div id="content">
+</div>
+</body>
+</html>
+
