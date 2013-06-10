@@ -99,54 +99,64 @@ background-color:black;
 .G
 {
 background-color:green;
+ width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border-style:solid;
+        border-width: 1px;
+border-color:#CCC;
 }
 </style>
   <meta charset="utf-8" />
   <script src="js/jquery-1.9.1.js"></script>
-   <script type="text/javascript">
+  <script src="js/rotate.js"></script>
+  <script type="text/javascript">
 
 </script>
 
   </head>
 <body>
 <script>
-
-	maxX=30;
+maxX=30;
 maxY=15;
 var gridX=0;
 var gridY=0;
 var x=0;
 var y=0;
-	var stack=[];
-	function initializeMatrix()
-	{
-		var $table = $('<table/>');
-		for(var i=0;i<gridX;i++)
-		{
-			var $tr=$('<tr/>');
-			for(var j=0;j<gridY;j++)
-			{	
-				var $wrap = $('<div/>');
-				$wrap.attr('id',i.toString()+j.toString());
-				$wrap.attr('class',"btn-success asd");
-				var $td=$('<td/>');
-				$td.append($wrap);
-				$tr.append($td);
-			}
-			$table.prepend($tr);
-		}
-		$('#content').append($table);
-	}
-	function checkInput()
+var str="";
+var direction='';
+var degree=0;
+var target=0;
+var stack=[];
+function initializeMatrix()
 {
-   
+	var $table = $('<table/>');
+	for(var i=1;i<=gridY;i++)
+	{
+		var $tr=$('<tr/>');
+		for(var j=1;j<=gridX;j++)
+		{	
+			var $wrap = $('<div/>');
+			$wrap.attr('id',i.toString()+j.toString());
+			$wrap.attr('class',"asd");
+			var $td=$('<td/>');
+			$td.append($wrap);
+			$tr.append($td);
+		}
+		$table.prepend($tr);
+	}
+	$('#content').append($table);
+}
+
+function checkInput()
+{
     var temp=$('#direction').val().toUpperCase();
     //alert(temp);
     if(temp.length==1)
     {
         if(temp=='N'||temp=='S'||temp=='E'||temp=='W')
         {
-            var str=$('#command').val().toUpperCase();
+            str=$('#command').val().toUpperCase();
             var bool=true;
              //alert(str.length);
             for(var i=0;i<str.length;i++)
@@ -159,28 +169,132 @@ var y=0;
         else return false;        
     }
     else return false;
- }
-$(function()
+}
+
+function detectLeftdirection()
 {
-	
-  	/*$("div").click(function() {
-	var cur_id=$(this).attr("id");	
-	var  i=cur_id[0];
-	var j=cur_id[1];
-	var src=$(this).attr("class");	
-	if(checkAdjacent(i,j,src))
+	switch(direction)
 	{
-		shade(i+j);
-		Fill(rows,cols,src);
+		case 'N': direction='W'; break;
+		case 'W': direction='S'; break;
+		case 'S': direction='E'; break;
+		case 'E': direction='N'; break;
 	}
-});*/
-var degree=0;
-var target=0;
-$('#right').click(function(){
+	$('#curdir').val(direction);
+}
+function detectRightdirection()
+{
+	switch(direction)
+	{
+		case 'N': direction='E'; break;
+		case 'E': direction='S'; break;
+		case 'S': direction='W'; break;
+		case 'W': direction='N'; break;
+	}
+	$('#curdir').val(direction);
+}
+
+function moveForward()
+{
+var flag=true;
+	$('#'+y.toString()+x.toString()).attr('class','G');
+	$('#'+y.toString()+x.toString()).html('');
+	switch(direction)
+	{
+		case 'N': y++; y>gridY?flag=false:flag; break;
+		case 'S': y--; y<0?flag=false:flag; break;
+		case 'E': x++; x>gridX?flag=false:flag;break;
+		case 'W': x--; x<0?flag=false:flag;break;
+	}
+	if(flag)
+	{
+		$('#'+y.toString()+x.toString()).html($('#img'));
+		alert();
+		}
+	else
+	    showError("Moving Out Of Bound");
+return flag;  
+}   
+function startMovement()
+{
+	var len=str.length;
+	var i=0;
+	moved=function()
+	{
+	   switch(str[i])
+	   {
+	        case 'L':
+				target-=90;
+				showError("Moving Left");
+				moveLeft();
+				detectLeftdirection();
+				setTimeout(function(){i++;check();},2400);
+			 	break;
+			case 'R':
+				target+=90;
+				showError("Moving Right");
+				moveRight();
+				detectRightdirection();
+				setTimeout(function(){i++;check();},2400);
+			 	break;
+			case 'M':
+				showError("Moving Forward");
+				if(!moveForward()) i=len;
+				i++;
+				check();
+				//setTimeout(function(){i++;check();},1200);
+			 	break;
+		}
+		function check()
+	{
+	
+	    i<len?moved():showError("Completed");
+	}
+		
+	};
+	
+	moved();
+}		
+//alert(len);
+
+function initiatePosition()
+{
+    showError("Initiate Position");
+	direction=$('#direction').val().toUpperCase();
+	$('#'+y.toString()+x.toString()).html('<img src="img/arrow-min.png" id="img"/>');
+	switch(direction)
+	{
+		case 'N': 
+		     degree=0;
+			 startMovement();
+			 break;
+		case 'E':
+		     degree=0;
+			 target=degree+90;
+			 moveRight();
+			 setTimeout(function(){startMovement();},1000);
+			 break;
+	    case 'W':
+		     degree=0;
+			 target=degree-90;
+			 moveLeft();
+			 setTimeout(function(){startMovement();},1000);
+			 break;
+		 case 'S':
+		     degree=0;
+			 target=degree-180;
+			 moveLeft()
+			 setTimeout(function(){startMovement();},2000);
+			 break;	 
+	}
+	
+}
+function moveRight()
+{
     if(degree==360) degree=0;
     target=degree+90;
     move=function(){
-                  degree+=10;
+                  degree+=5;
     $('#img').css({
 		'-webkit-transform': 'rotate('+degree+'deg)',
 		'-moz-transform': 'rotate('+degree+'deg)',
@@ -196,38 +310,53 @@ $('#right').click(function(){
     
 		};
 move();
-   
-		});
-$('#left').click(function(){
+degree-=5;
+}
+function moveLeft()
+{
     if(degree==-360) degree=0;
     target=degree-90;
     //alert("left called");
-  
-    move=function(){
-                  degree-=10;
-    $('#img').css({
-		'-webkit-transform': 'rotate('+degree+'deg)',
-		'-moz-transform': 'rotate('+degree+'deg)',
-		'-ms-transform': 'rotate('+degree+'deg)',
-		'-o-transform': 'rotate('+degree+'deg)',
-		'transform': 'rotate('+degree+'deg)'
-				});
+    move=function()
+	{
+    	degree-=5;
+    	$('#img').css({
+			'-webkit-transform': 'rotate('+degree+'deg)',
+			'-moz-transform': 'rotate('+degree+'deg)',
+			'-ms-transform': 'rotate('+degree+'deg)',
+			'-o-transform': 'rotate('+degree+'deg)',
+			'transform': 'rotate('+degree+'deg)'
+		});
         $('#degree').val(degree);
-    $('#target').val(target);
+    	$('#target').val(target);
         //alert(degree);
-    if(degree>target) setTimeout(move,100);
+    	if(degree>target) setTimeout(move,100);
 		//alert("left");
-    
-		};
+    };
 move();
-    
-});
+degree+=5;
+}
 
 function showError(msg)
 {
 	$('.notify').show();
 	$('.notify').html("<b>"+msg+"</b>");
 }
+$(function()
+{
+	
+  	/*$("div").click(function() {
+	var cur_id=$(this).attr("id");	
+	var  i=cur_id[0];
+	var j=cur_id[1];
+	var src=$(this).attr("class");	
+	if(checkAdjacent(i,j,src))
+	{
+		shade(i+j);
+		Fill(rows,cols,src);
+	}
+});*/
+
 $('#construct').click(function()
 {
     if($.isNumeric($('#gridX').val()) && $.isNumeric($('#gridY').val()))
@@ -250,6 +379,7 @@ $('#construct').click(function()
     else showError("Non-Numeric Input Not Allowed. ");
 
  });
+ 
  $('#gridReset').click(function()
                    {
                      $('#gridX').val('');
@@ -276,12 +406,11 @@ $('#start').click(function()
             $('#y').prop('disabled', true);
             $('#direction').prop('disabled', true); 
             $('#command').prop('disabled', true);
-            //startMovement();
+            initiatePosition();
         }
     }
     else showError("Invalid Input ");                       
-                     
-                   });
+});
 
 $('#reset').click(function()
                    {
@@ -300,11 +429,14 @@ $('#reset').click(function()
 </script>
 <div class="header">
 <div class="wrapper">
-   <div class="general">
+   <div style="padding-top:10px;">
      <input class="span2 sp" id="gridX" type="text" placeholder="X: X>0 && X<28">
      <input class="span2" id="gridY" type="text" placeholder="Y: Y>0 &&Y<12">
      <button class="btn btn-success" type="button" id="construct">Construct</button>
      <button class="btn btn-danger" type="button" id="gridReset">Reset</button>
+	   <input class="span1" id="degree" type="text" >
+     <input class="span1" id="target" type="text" >
+	 <input class="span1" id="curdir" type="text" >
 	 <label id="notify">
    </div>
    <div class="input">  
@@ -316,6 +448,7 @@ $('#reset').click(function()
      <button class="btn btn-danger" type="button" id="reset">Reset</button>
    </div>
    </div>
+   
 </div>       
 <div class="error">
 <div class="notify"></div>
