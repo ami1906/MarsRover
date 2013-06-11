@@ -1,6 +1,6 @@
 MarsRover
 =========
-A robotic rover are to be landed by NASA on a plateau on Mars.
+A robotic rover is to be landed by NASA on a plateau on Mars.
 
 This plateau, which is curiously rectangular, must be navigated by the rover so that their on-board cameras can get a complete view of the surrounding terrain to send back to Earth.
 
