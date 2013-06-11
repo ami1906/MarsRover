@@ -5,7 +5,7 @@
  * 
  */
 var maxX=30;
-var maxY=20;
+var maxY=14;
 var gridX=0;
 var gridY=0;
 var x=0;
