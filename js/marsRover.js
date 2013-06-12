@@ -2,14 +2,7 @@
  * Javascript MarsRover  
  * Author: Amarnath Krishnan
  * Date: 2013-06-11
-
-A robotic rover is to be landed by NASA on a plateau on Mars.
-
-This plateau, which is curiously rectangular, must be navigated by the rover so that their on-board ameras can get a complete view of the surrounding terrain to send back to Earth.
-
-A rover�s position and location is represented by a combination of x and y co-ordinates and a letter representing one of the four cardinal compass points. The plateau is divided up into a grid to simplify navigation. An example position might be 0, 0, N, which means the rover is in the bottom left corner and facing North.
-
-In order to control a rover , NASA sends a simple string of letters. The possible letters are �L�, �R� and �M�. �L� and �R� makes the rover spin 90 degrees left or right respectively, without moving from its current spot. �M� makes the rover move forward one grid position, and maintain the same heading.
+ * 
  */
 var maxX=30;
 var maxY=14;
@@ -17,11 +10,11 @@ var gridX=0;
 var gridY=0;
 var x=0;
 var y=0;
-var str="";
+var str='';
 var direction='';
 var degree=0;
 var target=0;
-var stack=[];
+var index=0;
 function initializeMatrix()
 {
 	var $table = $('<table/>');
@@ -45,16 +38,17 @@ function initializeMatrix()
 function checkInput()
 {
     var temp=$('#direction').val().toUpperCase();
-    //alert(temp);
-    if(temp.length==1)
+	
+	if(temp.length==1)
     {
         if(temp=='N'||temp=='S'||temp=='E'||temp=='W')
         {
+			str='';
             str=$('#command').val().toUpperCase();
             var bool=true;
             for(var i=0;i<str.length;i++)
             {
-                if(str[i]!='L' && str[i]!='R' && str[i]!='M')
+                    if(str[i]!='L' && str[i]!='R' && str[i]!='M')
                     bool=false;
             }
             return bool;           
@@ -118,52 +112,50 @@ return flag;
 }   
 function startMovement()
 {
-        var success=true;
-	//alert("started movement");
+    var success=true;
 	var len=str.length;
-	var i=0;
+	index=0;
 	moved=function()
 	{
-	   switch(str[i])
+		switch(str[index])
 	   {
 	        case 'L':
 				target-=90;
 				showError("Moving Left");
 				moveLeft();
 				detectLeftdirection();
-				setTimeout(function(){i++;check();},2000);
+				setTimeout(function(){index++;check();},2000);
 			 	break;
 			case 'R':
 				target+=90;
 				showError("Moving Right");
 				moveRight();
 				detectRightdirection();
-				setTimeout(function(){i++;check();},2000);
+				setTimeout(function(){index++;check();},2000);
 			 	break;
 			case 'M':
 				if(!moveForward())
 				{
-					i=len;
+					index=len;
 					success=false;
 				}
-				setTimeout(function(){i++;check();},1500);
+				setTimeout(function(){index++;check();},1500);
 			 	break;
 		}
 		function check()
-	{
-	
-	    i<len?moved():(success==true?showError("Completed"):$('.notify').append("<b> -- Terminated </b>"));
-	}
+		{
+		    index<len?moved():(success==true?showError("Completed"):$('.notify').append("<b> -- Terminated </b>"));
+		}
 		
 	};
-	
 	moved();
 }		
-//alert(len);
+
 
 function initiatePosition()
 {
     showError("Initiate Position");
+	direction='';
 	direction=$('#direction').val().toUpperCase();
 	$('#'+y.toString()+x.toString()).html('<img src="img/arrow-min.png" id="img"/>');
 	switch(direction)
@@ -213,7 +205,6 @@ function moveRight()
 	    
 		};
 move();
-//degree-=5;
 }
 
 function moveLeft()
@@ -223,7 +214,6 @@ function moveLeft()
 	degree=0;
     	target=degree-90;
     }
-    //alert("left called");
     move=function()
 	{
         degree-=5;
@@ -234,14 +224,14 @@ function moveLeft()
 			'-o-transform': 'rotate('+degree+'deg)',
 			'transform': 'rotate('+degree+'deg)'
 		});
-              //alert(degree);
+              
 	$('#degree').val(degree);
     	$('#target').val(target);
     	if(degree>target) setTimeout(move,100);
-		//alert("left");
+		
     };
 move();
-//degree+=5;
+
 }
 
 function clearInput()
@@ -258,6 +248,8 @@ function clearInput()
   $('.notify').hide();
   $('.notify').html("");
   $('#content').html("");
+  str='';
+  
 }
 
 
@@ -268,38 +260,25 @@ function showError(msg)
 }
 $(function()
 {
-	
-  	/*$("div").click(function() {
-	var cur_id=$(this).attr("id");	
-	var  i=cur_id[0];
-	var j=cur_id[1];
-	var src=$(this).attr("class");	
-	if(checkAdjacent(i,j,src))
-	{
-		shade(i+j);
-		Fill(rows,cols,src);
-	}
-});*/
-
 $('#construct').click(function()
 {
     if($.isNumeric($('#gridX').val()) && $.isNumeric($('#gridY').val()))
     {
+		gridX=0;
+        gridY=0;
         gridX=parseInt($('#gridX').val());
         gridY=parseInt($('#gridY').val());
         if((gridX<0 ||gridX>maxX)||(gridY<0 || gridY>maxY)) showError("Input Out of Bound. ");
         else
         {
-            $('#gridX').prop('disabled', true); 
+			$('#gridX').prop('disabled', true); 
             $('#gridY').prop('disabled', true);
             $('#construct').prop('disabled', true);
 	    $('#input').show();
 	    initializeMatrix();
 	    $('.notify').hide();
 	    $('.notify').html("");
-			
-            
-        }
+	    }
     }
     else showError("Non-Numeric Input Not Allowed. ");
 
@@ -323,6 +302,8 @@ $('#start').click(function()
 {
     if($.isNumeric($('#x').val()) && $.isNumeric($('#y').val()) && checkInput())
     {
+		x=0;
+        y=0;
         x=parseInt($('#x').val());
         y=parseInt($('#y').val());
 		if((x<0 ||x>gridX)||(y<0 || y>gridY)) showError("Input Out of Bound.");
@@ -330,7 +311,7 @@ $('#start').click(function()
         {
             $('#x').prop('disabled', true); 
             $('#y').prop('disabled', true);
-	    $('#start').prop('disabled', true);
+	    	$('#start').prop('disabled', true);
             $('#direction').prop('disabled', true); 
             $('#command').prop('disabled', true);
             initiatePosition();
