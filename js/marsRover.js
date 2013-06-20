@@ -67,7 +67,7 @@ function detectLeftdirection()
 		case 'S': direction='E'; break;
 		case 'E': direction='N'; break;
 	}
-	$('#curdir').val(direction);
+	
 }
 function detectRightdirection()
 {
@@ -78,7 +78,7 @@ function detectRightdirection()
 		case 'S': direction='W'; break;
 		case 'W': direction='N'; break;
 	}
-	$('#curdir').val(direction);
+	
 }
 
 function moveForward()
@@ -199,12 +199,12 @@ function moveRight()
 		'-o-transform': 'rotate('+degree+'deg)',
 		'transform': 'rotate('+degree+'deg)'
 				});
-    $('#degree').val(degree);
-    $('#target').val(target);
+   
     if(degree<target) setTimeout(move,100);
 	    
 		};
 move();
+
 }
 
 function moveLeft()
@@ -224,11 +224,7 @@ function moveLeft()
 			'-o-transform': 'rotate('+degree+'deg)',
 			'transform': 'rotate('+degree+'deg)'
 		});
-              
-	$('#degree').val(degree);
-    	$('#target').val(target);
     	if(degree>target) setTimeout(move,100);
-		
     };
 move();
 
@@ -260,13 +256,14 @@ function showError(msg)
 }
 $(function()
 {
+	showError("Click Test Case Button to view Test Case");
 $('#construct').click(function()
 {
     if($.isNumeric($('#gridX').val()) && $.isNumeric($('#gridY').val()))
     {
 		gridX=0;
         gridY=0;
-        gridX=parseInt($('#gridX').val());
+		gridX=parseInt($('#gridX').val());
         gridY=parseInt($('#gridY').val());
         if((gridX<0 ||gridX>maxX)||(gridY<0 || gridY>maxY)) showError("Input Out of Bound. ");
         else
@@ -283,7 +280,7 @@ $('#construct').click(function()
     else showError("Non-Numeric Input Not Allowed. ");
 
  });
- 
+ $('#testcase').click(function(){ $('#demo').slideToggle();});
  $('#gridReset').click(function()
  {
     $('#gridX').val('');
@@ -321,5 +318,5 @@ $('#start').click(function()
 });
 
 $('#reset').click(function(){clearInput();initializeMatrix();});
-});
+});s
 
