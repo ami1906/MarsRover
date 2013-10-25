@@ -4,17 +4,17 @@
  * Date: 2013-06-11
  * 
  */
-var maxX=30;
-var maxY=14;
-var gridX=0;
-var gridY=0;
-var x=0;
-var y=0;
-var str='';
-var direction='';
-var degree=0;
-var target=0;
-var index=0;
+var maxX;
+var maxY;
+var grid;
+var gridY;
+var x;
+var y;
+var str;
+var direction;
+var degree;
+var target;
+var index;
 function initializeMatrix()
 {
 	var $table = $('<table/>');
@@ -67,7 +67,7 @@ function detectLeftdirection()
 		case 'S': direction='E'; break;
 		case 'E': direction='N'; break;
 	}
-	
+	$('#curdir').val(direction);
 }
 function detectRightdirection()
 {
@@ -78,7 +78,7 @@ function detectRightdirection()
 		case 'S': direction='W'; break;
 		case 'W': direction='N'; break;
 	}
-	
+	$('#curdir').val(direction);
 }
 
 function moveForward()
@@ -95,7 +95,7 @@ var flag=true;
 	}
 	if(flag)
 	{
-		showError("Moving Forward");
+		showError("Moving Forward",false);
 		$('#'+y.toString()+x.toString()).html('<img src="img/arrow-min.png" id="img"/>');		
 		$('#img').css({
 		'-webkit-transform': 'rotate('+degree+'deg)',
@@ -107,7 +107,7 @@ var flag=true;
 		
 		}
 	else
-	    showError("Cannot move out of Grid");
+      	    showError("Cannot move out of Grid",true);
 return flag;  
 }   
 function startMovement()
@@ -121,17 +121,17 @@ function startMovement()
 	   {
 	        case 'L':
 				target-=90;
-				showError("Moving Left");
+				showError("Moving Left",false);
 				moveLeft();
 				detectLeftdirection();
-				setTimeout(function(){index++;check();},2000);
+                                setTimeout(function(){index++;check();},2000);
 			 	break;
 			case 'R':
 				target+=90;
-				showError("Moving Right");
+				showError("Moving Right",false);
 				moveRight();
 				detectRightdirection();
-				setTimeout(function(){index++;check();},2000);
+                                setTimeout(function(){index++;check();},2000);
 			 	break;
 			case 'M':
 				if(!moveForward())
@@ -139,12 +139,12 @@ function startMovement()
 					index=len;
 					success=false;
 				}
-				setTimeout(function(){index++;check();},1500);
+                                setTimeout(function(){index++;check();},1200);
 			 	break;
 		}
 		function check()
 		{
-		    index<len?moved():(success==true?showError("Completed"):$('.notify').append("<b> -- Terminated </b>"));
+		    index<len?moved():(success==true?showError("Completed",false):$('#notify').append("<b> -- Terminated </b>"));
 		}
 		
 	};
@@ -154,7 +154,7 @@ function startMovement()
 
 function initiatePosition()
 {
-    showError("Initiate Position");
+    showError("Initiate Position",false);
 	direction='';
 	direction=$('#direction').val().toUpperCase();
 	$('#'+y.toString()+x.toString()).html('<img src="img/arrow-min.png" id="img"/>');
@@ -191,7 +191,7 @@ function moveRight()
     target=degree+90;
 }
     move=function(){
-                  degree+=5;
+                  degree+=10;
     $('#img').css({
 		'-webkit-transform': 'rotate('+degree+'deg)',
 		'-moz-transform': 'rotate('+degree+'deg)',
@@ -199,12 +199,12 @@ function moveRight()
 		'-o-transform': 'rotate('+degree+'deg)',
 		'transform': 'rotate('+degree+'deg)'
 				});
-   
+   // $('#degree').val(degree);
+    //$('#target').val(target);
     if(degree<target) setTimeout(move,100);
 	    
 		};
 move();
-
 }
 
 function moveLeft()
@@ -216,7 +216,7 @@ function moveLeft()
     }
     move=function()
 	{
-        degree-=5;
+        degree-=10;
     	$('#img').css({
 			'-webkit-transform': 'rotate('+degree+'deg)',
 			'-moz-transform': 'rotate('+degree+'deg)',
@@ -224,7 +224,11 @@ function moveLeft()
 			'-o-transform': 'rotate('+degree+'deg)',
 			'transform': 'rotate('+degree+'deg)'
 		});
+              
+	//$('#degree').val(degree);
+    	//$('#target').val(target);
     	if(degree>target) setTimeout(move,100);
+		
     };
 move();
 
@@ -241,31 +245,42 @@ function clearInput()
   $('#command').prop('disabled', false);
   $('#direction').prop('disabled', false); 
   $('#start').prop('disabled', false);
-  $('.notify').hide();
-  $('.notify').html("");
+  $('#notify').hide();
+  $('#notify').html("");
   $('#content').html("");
   str='';
   
 }
 
 
-function showError(msg)
+function showError(msg,terminate)
 {
-	$('.notify').show();
-	$('.notify').html("<b>"+msg+"</b>");
+        if(terminate)
+        {
+             $('#notify').toggleClass("alert-info",false);
+             $('#notify').toggleClass("alert-error",true);
+             $('#notify').show();
+	     $('#notify').html("<b>"+msg+"</b>");
+        }
+        else
+        {
+             $('#notify').toggleClass("alert-error",false);
+             $('#notify').toggleClass("alert-info",true);
+	     $('#notify').show();
+	     $('#notify').html("<b>"+msg+"</b>");
+        }
 }
 $(function()
 {
-	showError("Click Test Case Button to view Test Case");
 $('#construct').click(function()
 {
     if($.isNumeric($('#gridX').val()) && $.isNumeric($('#gridY').val()))
     {
 		gridX=0;
         gridY=0;
-		gridX=parseInt($('#gridX').val());
+        gridX=parseInt($('#gridX').val());
         gridY=parseInt($('#gridY').val());
-        if((gridX<0 ||gridX>maxX)||(gridY<0 || gridY>maxY)) showError("Input Out of Bound. ");
+        if((gridX<0 ||gridX>maxX)||(gridY<0 || gridY>maxY)) showError("Input Out of Bound. ",true);
         else
         {
 			$('#gridX').prop('disabled', true); 
@@ -273,28 +288,46 @@ $('#construct').click(function()
             $('#construct').prop('disabled', true);
 	    $('#input').show();
 	    initializeMatrix();
-	    $('.notify').hide();
-	    $('.notify').html("");
+	    $('#notify').hide();
+	    $('#notify').html("");
 	    }
     }
-    else showError("Non-Numeric Input Not Allowed. ");
+    else showError("Non-Numeric Input Not Allowed. ",true);
 
  });
- $('#testcase').click(function(){ $('#demo').slideToggle();});
- $('#gridReset').click(function()
+ 
+ $('#gridReset').click(function(){gridReset()});
+
+function gridReset()
  {
+    maxX=30;
+    maxY=14;
+    gridX=0;
+    gridY=0;
+    x=0;
+    y=0;
+    str='';
+    direction='';
+    degree=0;
+    target=0;
+    index=0;
     $('#gridX').val('');
     $('#gridY').val('');
+    //$('#degree').val('');
+    //$('#target').val('');
     $('#gridX').prop('disabled', false); 
     $('#gridY').prop('disabled', false); 
     $('#construct').prop('disabled', false);
     $('#input').hide();
-    $('.notify').hide();
-    $('.notify').html("");
+    $('#notify').hide();
+    $('#notify').html("");
     $('#content').html("");
     clearInput();                     
-  });
-				   
+  }	
+
+$( document ).ready(function() {
+gridReset()});
+			   
 $('#start').click(function()
 {
     if($.isNumeric($('#x').val()) && $.isNumeric($('#y').val()) && checkInput())
@@ -303,7 +336,7 @@ $('#start').click(function()
         y=0;
         x=parseInt($('#x').val());
         y=parseInt($('#y').val());
-		if((x<0 ||x>gridX)||(y<0 || y>gridY)) showError("Input Out of Bound.");
+		if((x<0 ||x>gridX)||(y<0 || y>gridY)) showError("Input Out of Bound.",true);
         else
         {
             $('#x').prop('disabled', true); 
@@ -314,9 +347,9 @@ $('#start').click(function()
             initiatePosition();
         }
     }
-    else showError("Invalid Input ");                       
+    else showError("Invalid Input ",true);                       
 });
 
 $('#reset').click(function(){clearInput();initializeMatrix();});
-});s
+});
 

@@ -8,24 +8,35 @@ body
 {
     display:none;
 }
-.error
+
+.inp_length
 {
-    background-color:white;
-    text-align:centre;
-    color:black;
-    padding-top: 70px;
+   width: 150px !important;
+   height: 15px !important;
+}
+
+.but_length
+{
+   height: 27px !important;
+   padding: 0px 6px 0px 6px;
+}
+#error
+{
+    padding-top: 95px;
+    padding-bottom: 3px;
     margin:auto;
-    height: 35px;
+    height: 45px;
     border-style:none none solid none;
     border-width: 2px;
-    border-color:red;
+    border-color:green;
+       
 }
 .wrapper
 {
     width: 100%;
-    background-color:green;
-    height:70px;
+    height:90px;
     position:fixed;
+	background-image:url(../img/bg.gif)
 }
 #content
 {
@@ -49,14 +60,13 @@ body
 input{
     text-align:center;
 }
-.notify
+#notify
 {
     padding-top:10px;
-    height: 30px;
-    width:300px;
     margin: auto;
     display:none;
-    text-align:centre;
+    text-align: center;
+    width: 500px;
 }
 table
 {

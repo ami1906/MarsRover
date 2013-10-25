@@ -7,38 +7,36 @@
   <meta charset="utf-8" />
   <script src="js/jquery-1.9.1.js"></script>
   <script src="js/marsRover.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="css/marsRover.css">
   </head>
 <body>
 <div class="wrapper">
-<div class="header">
-   <div style="padding-top:10px;">
-     <input id="gridX" type="text" placeholder="X: X>0 && X<=30">
-     <input id="gridY" type="text" placeholder="Y: Y>0 &&Y<=14">
-     <button type="button" id="construct">Construct</button>
-     <button type="button" id="gridReset">Reset</button>
-	 <button type="button" id="testcase" style="padding-left:10px">Test Case</button>
-
+  <div class="header">
+    <div style="padding-top:10px;"  class="form-inline">
+     <input id="gridX" class="inp_length" type="text" placeholder="X: X>0 && X<=30">
+     <input id="gridY" class="inp_length" type="text" placeholder="Y: Y>0 &&Y<=14">
+     <button type="button " class="btn btn-success but_length" id="construct">Construct</button>
+     <button type="button" class="btn btn-danger but_length" id="gridReset">Reset</button>
+       
+  </div>
+   <div id="input" style="padding-top:17px;"  class="form-inline">  
+     <input id="x" type="text" class="inp_length" placeholder="X">
+     <input id="y" type="text" class="inp_length" placeholder="Y">
+     <input id="direction" type="text" class="inp_length" placeholder="Direction(N,E,S,W)">
+     <input id="command" type="text" class="inp_length" placeholder="Input String(L,R,M)">
+     <button type="button" class="btn btn-success but_length" id="start">Start</button>
+     <button type="button" class="btn btn-danger but_length" id="reset">Reset</button>
    </div>
-   <div id="input">  
-     <input id="x" type="text" placeholder="x">
-     <input id="y" type="text" placeholder="y">
-     <input id="direction" type="text" placeholder="Direction(N,E,S,W)">
-     <input id="command" type="text" placeholder="Input String(L,R,M)">
-     <button type="button" id="start">Start</button>
-     <button type="button" id="reset">Reset</button>
-   </div>
-</div>
+  </div>
    
-</div>       
-<div class="error">
-    <div class="notify"></div>
-</div>
-<div style="margin:auto; width:900px;"><img src="img/demo.png" id="demo"  style="display:none"/></div>
-
+ </div>
+ <div id="error">
+    <div id="notify" class="alert"></div>
+  </div>
 <div id="content">
-
+    
 </div>
-</body>
+
 </html>
 
