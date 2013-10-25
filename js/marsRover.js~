@@ -199,8 +199,8 @@ function moveRight()
 		'-o-transform': 'rotate('+degree+'deg)',
 		'transform': 'rotate('+degree+'deg)'
 				});
-   // $('#degree').val(degree);
-    //$('#target').val(target);
+    $('#degree').val(degree);
+    $('#target').val(target);
     if(degree<target) setTimeout(move,100);
 	    
 		};
@@ -225,8 +225,8 @@ function moveLeft()
 			'transform': 'rotate('+degree+'deg)'
 		});
               
-	//$('#degree').val(degree);
-    	//$('#target').val(target);
+	$('#degree').val(degree);
+    	$('#target').val(target);
     	if(degree>target) setTimeout(move,100);
 		
     };
@@ -313,8 +313,8 @@ function gridReset()
     index=0;
     $('#gridX').val('');
     $('#gridY').val('');
-    //$('#degree').val('');
-    //$('#target').val('');
+    $('#degree').val('');
+    $('#target').val('');
     $('#gridX').prop('disabled', false); 
     $('#gridY').prop('disabled', false); 
     $('#construct').prop('disabled', false);
